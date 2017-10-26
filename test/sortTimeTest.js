@@ -20,13 +20,13 @@ describe('Times', () => {
     assert.equal(instance.counter, 4);
   });
 
-  it('should show correct histogram obj', () => {
+  it('should histogram obj when there is not existing items data', () => {
     let sampleRide = {
       startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
       items: {a: 1, b: 2, c: 3}
      }
     let instance = new ItemCounter();
     instance.processRide(sampleRide)
-    assert.deepEqual(instance.histogram, {a: 1, b:2, c:3}) 
+    assert.deepEqual(instance.histogram[sampleRide.startEnd[0]], {a: 1, b:2, c:3}) 
   })
 })

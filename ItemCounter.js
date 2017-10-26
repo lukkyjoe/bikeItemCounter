@@ -5,70 +5,42 @@ class Ride {
   }
 }
 
-function checkForAdd(startTime, obj){
-  if (!this.histogram.hasOwnProperty(startTime)){
-    this.histogram[startTime] = obj.items //initialize positive difference
-  } else {
-    for (let item in obj.items){
-      if (!this.histogram[startTime].hasOwnProperty(item)){
-        this.histogram[startTime][item] = item //initialize quantity
-      } else {
-        this.histogram[startTime][item] += item //add to basket item inside histogram
-      }
-    }
-  }
-}
-
-function checkForSubtract(endTime, obj){
-  if (!this.histogram.hasOwnProperty(endTime)){
-    this.histogram[endTime] = obj.items //initialize positive difference
-  } else {
-    for (let item in obj.items){
-      if (!this.histogram[endTime].hasOwnProperty(item)){
-        this.histogram[endTime][item] = item //initialize quantity
-      } else {
-        this.histogram[endTime][item] -= item //add to basket item inside histogram
-      }
-    }
-  }
-}
-
 class ItemCounter {
   constructor(){
     this.histogram = {};
   }
   processRide(anyRideObj){
-    checkForAdd(anyRideObj.startEnd[0]);
-    checkForSubtract(anyRideObj.startEnd[1]);
+    this.checkForAdd(anyRideObj.startEnd[0], anyRideObj);
+    this.checkForSubtract(anyRideObj.startEnd[1], anyRideObj);
   }
   
-  // checkForAdd(startTime){
-  //   if (!this.histogram.hasOwnProperty(startTime)){
-  //     this.histogram[startTime] = anyRideObj.items //initialize positive difference
-  //   } else {
-  //     for (let item in anyRideObj.items){
-  //       if (!this.histogram[startTime].hasOwnProperty(item)){
-  //         this.histogram[startTime][item] = item //initialize quantity
-  //       } else {
-  //         this.histogram[startTime][item] += item //add to basket item inside histogram
-  //       }
-  //     }
-  //   }
-  // }
+  checkForAdd(time, obj){
+    if (!this.histogram.hasOwnProperty(time)){
+      this.histogram[time] = Object.assign({}, obj.items) //initialize positive difference
+    } 
+    // else {
+    //   for (let item in anyRideObj.items){
+    //     if (!this.histogram[startTime].hasOwnProperty(item)){
+    //       this.histogram[startTime][item] = item //initialize quantity
+    //     } else {
+    //       this.histogram[startTime][item] += item //add to basket item inside histogram
+    //     }
+    //   }
+    // }
+  }
+  checkForSubtract(time, obj){
+    function reverse(anyObj){
+      for (let key in anyObj){
+        anyObj[key] = - anyObj[key]
+      }
+      return anyObj;
+    }
+    if (!this.histogram.hasOwnProperty(time)){
+      this.histogram[time] = Object.assign({}, reverse(obj.items)) //initialize positive difference
+      console.log(this.histogram)
+    } 
+  }
   
-  // checkForSubtract(endTime){
-  //   if (!this.histogram.hasOwnProperty(endTime)){
-  //     this.histogram[endTime] = anyRideObj.items //initialize positive difference
-  //   } else {
-  //     for (let item in anyRideObj.items){
-  //       if (!this.histogram[endTime].hasOwnProperty(item)){
-  //         this.histogram[endTime][item] = item //initialize quantity
-  //       } else {
-  //         this.histogram[endTime][item] -= item //add to basket item inside histogram
-  //       }
-  //     }
-  //   }
-  // }
 
 }
 
