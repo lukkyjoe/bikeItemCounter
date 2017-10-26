@@ -1,53 +1,82 @@
-let sampleRide = {
- startEnd: [new Date(), new Date()],
- items: {a: 1, b: 2, c: 3}
-}
-
-
-module.exports.ride = class Ride {
+class Ride {
   constructor(startEnd, items){
     this.startEnd = startEnd; //tuple of Date Objects
     this.items = items
   }
 }
 
-function checkForAdd(startTime){
+function checkForAdd(startTime, obj){
   if (!this.histogram.hasOwnProperty(startTime)){
-    this.histogram[startTime] = items //initialize positive difference
+    this.histogram[startTime] = obj.items //initialize positive difference
   } else {
-    for (let item in items){
+    for (let item in obj.items){
       if (!this.histogram[startTime].hasOwnProperty(item)){
         this.histogram[startTime][item] = item //initialize quantity
       } else {
-        this.histogram[startTime][item] += item
+        this.histogram[startTime][item] += item //add to basket item inside histogram
       }
     }
   }
 }
 
-function checkForSubtract(endTime){
-  if (!this.histogram.hasOwnProperty(startTime)){
-    this.histogram[anyRideObj.startEnd[1]] = items; //initialize negative difference
+function checkForSubtract(endTime, obj){
+  if (!this.histogram.hasOwnProperty(endTime)){
+    this.histogram[endTime] = obj.items //initialize positive difference
+  } else {
+    for (let item in obj.items){
+      if (!this.histogram[endTime].hasOwnProperty(item)){
+        this.histogram[endTime][item] = item //initialize quantity
+      } else {
+        this.histogram[endTime][item] -= item //add to basket item inside histogram
+      }
+    }
   }
 }
 
-module.exports.ItemCounter = class ItemCounter {
+class ItemCounter {
   constructor(){
     this.histogram = {};
   }
   processRide(anyRideObj){
+    checkForAdd(anyRideObj.startEnd[0]);
+    checkForSubtract(anyRideObj.startEnd[1]);
+  }
+  
+  // checkForAdd(startTime){
+  //   if (!this.histogram.hasOwnProperty(startTime)){
+  //     this.histogram[startTime] = anyRideObj.items //initialize positive difference
+  //   } else {
+  //     for (let item in anyRideObj.items){
+  //       if (!this.histogram[startTime].hasOwnProperty(item)){
+  //         this.histogram[startTime][item] = item //initialize quantity
+  //       } else {
+  //         this.histogram[startTime][item] += item //add to basket item inside histogram
+  //       }
+  //     }
+  //   }
+  // }
+  
+  // checkForSubtract(endTime){
+  //   if (!this.histogram.hasOwnProperty(endTime)){
+  //     this.histogram[endTime] = anyRideObj.items //initialize positive difference
+  //   } else {
+  //     for (let item in anyRideObj.items){
+  //       if (!this.histogram[endTime].hasOwnProperty(item)){
+  //         this.histogram[endTime][item] = item //initialize quantity
+  //       } else {
+  //         this.histogram[endTime][item] -= item //add to basket item inside histogram
+  //       }
+  //     }
+  //   }
+  // }
 
+}
 
-    // if (!histogram.hasOwnProperty(anyRideObj.startEnd[0])){ //check startTime to see if it should be created or added
-    //   histogram[anyRideObj.startEnd[0]] = anyRideObj.items // add those items in at the startTime instant
-    // } 
-    // if (!histogram.hasOwnProperty(anyRideObj.startEnd[1])){ //check endTime
-    //   histogram[anyRideObj.startEnd[1]] = anyRideObj.items // add those items in at the endTime instant
-    // }
+class Counter {
+  constructor(){
+    this.counter = 0;
+  }
+  add(num){
+    this.counter += num;
   }
 }
-let originalObj = {a: 1, b: 2, c:3}
-let secondObj = {a: 1, b: 1, c:1}
-let resultObj = Object.assign(originalObj, secondObj)
-
-console.log(resultObj);
