@@ -7,5 +7,7 @@ Items: I assumed I can pass in an object with the name (String) of an item repre
 E.g. {'Apple': 1, 'Banana', 3}
 I will assume I don't have to deal with pluralization spelling logic when I receive the data, and will implement that only for the desired print function. 
 
-
-
+#Data fetching order assumptions
+I'm assuming that I can receive ride objects that represent start/end times out of order. 
+E.g. I might receive a Ride object with start/end time of 8pm / 9pm. 
+THEN I might receive a Ride object with start/end time of 6pm / 7pm. 

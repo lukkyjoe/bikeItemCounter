@@ -1,5 +1,14 @@
 const assert = chai.assert;
 
+class ItemCounter {
+  constructor(){
+    this.histogram = 0;
+  }
+  processRide(anyRideObj){
+    this.histogram ++;
+  }
+}
+
 describe('Times', () => {
   it('should dates into order', () => {
     let date4 = new Date(2017, 9, 26, 14, 70);
@@ -11,5 +20,12 @@ describe('Times', () => {
     let expectedResult = [date1, date2, date3, date4]
     
     assert.deepEqual(result, expectedResult)
-  } )
+  } );
+  it('should show correct incremented value', () => {
+    let instance = new ItemCounter();
+    instance.processRide()
+    instance.processRide()
+    instance.processRide()
+    assert.equal(instance.histogram, 3);
+  })
 })
