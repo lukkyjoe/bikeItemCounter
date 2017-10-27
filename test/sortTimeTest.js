@@ -25,8 +25,50 @@ describe('Times', () => {
       startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
       items: {a: 1, b: 2, c: 3}
      }
+    let expectedObj = {};
+    expectedObj[sampleRide.startEnd[0]] = {a: 1, b: 2, c: 3};
+    expectedObj[sampleRide.startEnd[1]] = {a: -1, b: -2, c: -3}
     let instance = new ItemCounter();
     instance.processRide(sampleRide)
-    assert.deepEqual(instance.histogram[sampleRide.startEnd[0]], {a: 1, b:2, c:3}) 
+    assert.deepEqual(instance.differenceLog, expectedObj) 
+  });
+
+  it('should update histogram obj when timestamp already exists (add)', () => {
+    let sampleRide = {
+      startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
+      items: {a: 1, b: 2, c: 3}
+     }
+    let sampleRide2 = {
+    startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 3, 05)],
+    items: {a: 1, b: 2, c: 3}
+    }
+    let expectedObj = {};
+    expectedObj[sampleRide.startEnd[0]] = {a: 2, b: 4, c: 6};
+    expectedObj[sampleRide2.startEnd[1]] = {a: -1, b: -2, c: -3};
+    expectedObj[sampleRide.startEnd[1]] = {a: -1, b: -2, c: -3}
+    let instance = new ItemCounter();
+    instance.processRide(sampleRide)
+    instance.processRide(sampleRide2)
+    assert.deepEqual(instance.differenceLog, expectedObj) 
   })
+
+  it('should update histogram obj when timestamp already exists (subtract)', () => {
+    let sampleRide = {
+      startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
+      items: {a: 1, b: 2, c: 3}
+     }
+    let sampleRide2 = {
+    startEnd: [new Date(2017, 9, 26, 2, 05), new Date(2017, 9, 26, 4, 05)],
+    items: {a: 1, b: 2, c: 3}
+    }
+    let expectedObj = {};
+    expectedObj[sampleRide.startEnd[0]] = {a: 1, b: 2, c: 3};
+    expectedObj[sampleRide2.startEnd[0]] = {a: 1, b: 2, c: 3};
+    expectedObj[sampleRide.startEnd[1]] = {a: -2, b: -4, c: -6}
+    let instance = new ItemCounter();
+    instance.processRide(sampleRide)
+    instance.processRide(sampleRide2)
+    assert.deepEqual(instance.differenceLog, expectedObj) 
+  })
+
 })
