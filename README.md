@@ -8,6 +8,9 @@ E.g. {'Apple': 1, 'Banana', 3}
 I will assume I don't have to deal with pluralization spelling logic when I receive the data, and will implement that only for the desired print function. 
 
 #Data fetching order assumptions
-I'm assuming that I can receive ride objects that represent start/end times out of order. 
+I assumed that I can receive ride objects that represent start/end times out of order. 
 E.g. I might receive a Ride object with start/end time of 8pm / 9pm. 
 THEN I might receive a Ride object with start/end time of 6pm / 7pm. 
+
+#Data integrity assumptions
+I assumed that all ride objects are processed by my function, and that therefore, I can maintain a sorted array as data gets passed in. 

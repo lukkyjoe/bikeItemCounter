@@ -5,50 +5,49 @@ class Ride {
   }
 }
 
+class Diff { // for the diff log
+  constructor(timeStamp, itemsDiff){
+    this.timeStamp = timeStamp;
+    this.itemsDiff = itemsDiff;
+  }
+}
+
 class ItemCounter {
   constructor(){
-    this.differenceLog = {};
+    this.differenceLog = [];
     this.histogram = {}
   }
   processRide(anyRideObj){
-    this.checkForAdd(anyRideObj.startEnd[0], anyRideObj);
-    this.checkForSubtract(anyRideObj.startEnd[1], anyRideObj);
-    // console.log(this.differenceLog)
+
   }
   
-  checkForAdd(time, obj){
-    if (!this.differenceLog.hasOwnProperty(time)){
-      this.differenceLog[time] = Object.assign({}, obj.items) //initialize positive difference
-    }  else {
-      for (let item in obj.items){
-        if (this.differenceLog[time].hasOwnProperty(item)){
-          this.differenceLog[time][item] += obj.items[item];
-        } else {
-          this.differenceLog[time][item] = obj.items[item];
-        }
+  binarySearch(target, anyArray, offset = 0){
+    //binary search through the existing diff log to find where the target belongs
+    let min = anyArray[0];
+    let max = anyArray[length - 1];
+    let middleIndex = Math.floor(anyArray.length / 2); 
+    if (anyArray.length === 1){
+      if (target < Object.keys(anyArray[0])){
+        return offset;
+      } else if (target > Object.keys(anyArray[0])) {
+        return offset + 1;
       }
     }
-
-  }
-
-  checkForSubtract(time, obj){
-    function reverse(anyObj){
-      for (let key in anyObj){
-        anyObj[key] = - anyObj[key]
-      }
-      return anyObj;
-    }
-    if (!this.differenceLog.hasOwnProperty(time)){
-      this.differenceLog[time] = Object.assign({}, reverse(obj.items)) //initialize negative difference
+    if (target === Object.keys(anyArray[middleIndex])){ //the target already exists and you found it!
+      //do the thing
+      return offset + middleIndex;
     } else {
-      for (let item in obj.items){
-        if (this.differenceLog[time].hasOwnProperty(item)){
-          this.differenceLog[time][item] -= obj.items[item];
-        } else {
-          this.differenceLog[time][item] = -obj.items[item];
-        }
+      if (target < Object.keys(anyArray[middleIndex])){
+        let shorterArray = anyArray.slice(0, middleIndex)
+        binarySearch(target, shorterArray, offset)
+      } else {
+        offset += middleIndex;
+        let shorterArray = anyArray.slice(middleIndex)
+        binarySearch(target, shorterArray, offset)
       }
     }
+  
+
   }
 
   printItemsPerInterval(){
