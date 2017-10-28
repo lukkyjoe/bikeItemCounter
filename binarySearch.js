@@ -1,6 +1,9 @@
 function binarySearch(target, fullArray){
   let insertionIndex = 0;
   let replace = false;
+  if (!fullArray.length){
+    return [0, replace]
+  }
   function recurse(target, anyArray, offset = 0){
     let min = anyArray[0];
     let max = anyArray[anyArray.length - 1];
@@ -38,6 +41,11 @@ function binarySearch(target, fullArray){
   return [insertionIndex, replace];
 }
 
-console.log(binarySearch(5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]));
+console.log(binarySearch(5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}])) 
+console.log(binarySearch(50, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]))
+console.log(binarySearch(7, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]))
+console.log(binarySearch(0.5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]))
+console.log(binarySearch(2, []));
+
 
 

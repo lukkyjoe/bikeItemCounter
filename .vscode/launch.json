@@ -8,8 +8,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "binary search",
-      "program": "${workspaceFolder}/binarySearch.js"
+      "name": "item counter processRide test",
+      "program": "${workspaceFolder}/ItemCounter.js"
     }
   ]
 }
