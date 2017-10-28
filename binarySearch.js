@@ -1,34 +1,43 @@
-  function binarySearch(target, anyArray, offset = 0){
-    //binary search through the existing diff log to find where the target belongs
-    console.log(offset);
+function binarySearch(target, fullArray){
+  let insertionIndex = 0;
+  let replace = false;
+  function recurse(target, anyArray, offset = 0){
     let min = anyArray[0];
     let max = anyArray[anyArray.length - 1];
     let middleIndex = Math.floor(anyArray.length / 2); 
-    if (anyArray.length === 1){
-      if (target < Object.keys(anyArray[0])){
-        console.log('done')
-        return offset;
-      } else if (target > Object.keys(anyArray[0])) {
-        console.log('done')
-        offset += 1;
-        console.log(offset);
-        return offset;
-      }
-    }
-    if (target === Object.keys(anyArray[middleIndex])){ //the target already exists and you found it!
-      //do the thing
-      console.log('done');
-      return offset + middleIndex;
+    if (target === Number(Object.keys(anyArray[middleIndex])[0])){
+      insertionIndex = offset + middleIndex;
+      replace = true;
+      return;
     } else {
-      if (target < Object.keys(anyArray[middleIndex])){
-        let shorterArray = anyArray.slice(0, middleIndex)
-        binarySearch(target, shorterArray, offset)
-      } else {
-        offset += middleIndex;
-        let shorterArray = anyArray.slice(middleIndex)
-        binarySearch(target, shorterArray, offset)
-      }
+        if (anyArray.length === 1){
+          if (target < Object.keys(anyArray[middleIndex])){
+            insertionIndex += offset;
+            return;
+          } else {
+            insertionIndex += offset + 1
+            return;
+          }
+        } else {
+            if (target < Object.keys(anyArray[middleIndex])){
+              let shorterArray = anyArray.slice(0, middleIndex)
+              recurse(target, shorterArray, offset);
+              return;
+            }
+            if (target > Object.keys(anyArray[middleIndex])){
+              offset += middleIndex;
+              let shorterArray = anyArray.slice(middleIndex)
+              recurse(target, shorterArray, offset)
+              return;
+            }
+        }        
     }
+
   }
-console.log('hey');
-console.log(binarySearch(5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}], 0));
+  recurse(target, fullArray);
+  return [insertionIndex, replace];
+}
+
+console.log(binarySearch(5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]));
+
+

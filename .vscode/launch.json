@@ -8,8 +8,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/ItemCounter.js"
+      "name": "binary search",
+      "program": "${workspaceFolder}/binarySearch.js"
     }
   ]
 }
