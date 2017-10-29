@@ -15,7 +15,6 @@ class Diff { // for the diff log
 class ItemCounter {
   constructor(){
     this.differenceLog = [];
-    // this.histogram = {}
   }
   processRide(anyRideObj){
     // break anyRideObj into two times; start and end
@@ -116,7 +115,8 @@ class ItemCounter {
     for (let i = 0; i < this.differenceLog.length - 1; i++){
       let itemsInTimeBlock = [];
       itemsInTimeBlock.push(Object.keys(this.differenceLog[i])[0]);
-      itemsInTimeBlock.push('2'); //push in 
+      for (let item in this.differenceLog)
+      itemsInTimeBlock.push('2'); //push in netItems
       histogram.push(itemsInTimeBlock);
     }
     console.log('histogram', histogram);
