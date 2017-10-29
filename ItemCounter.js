@@ -19,50 +19,60 @@ class ItemCounter {
   }
   processRide(anyRideObj){
     // break anyRideObj into two times; start and end
-    let ActionFromStartTime = this.binarySearch(anyRideObj.startEnd[0], this.differenceLog);
-    // console.log('actionFromStartTime', ActionFromStartTime)
+    let startInSeconds = anyRideObj.startEnd[0].getTime();
+    let endInSeconds = anyRideObj.startEnd[1].getTime();
+    console.log('startinSeconds', startInSeconds);
+    let ActionFromStartTime = this.binarySearch(startInSeconds, this.differenceLog);
+    console.log('actionFromStartTime', ActionFromStartTime)
     if (ActionFromStartTime[1] === true){ //if should replace
       //do the replacing inside differenceLog
       let replacementIndex = ActionFromStartTime[0]
       for (let key in anyRideObj.items){
-        if (this.differenceLog[replacementIndex].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][key] += anyRideObj.items[key]
+        console.log('keyyyyyyy YO', key);
+        if (this.differenceLog[replacementIndex][startInSeconds].hasOwnProperty(key)){ 
+          this.differenceLog[replacementIndex][startInSeconds][key] += anyRideObj.items[key]
         } else {
-          this.differenceLog[replacementIndex][key] = anyRideObj.items[key]
+          this.differenceLog[replacementIndex][startInSeconds][key] = anyRideObj.items[key]
         }
       }
     } else {
       // ADD the diff into differenceLog
       let insertionIndex = ActionFromStartTime[0]; 
       let diffLogObj = {};
-      diffLogObj[anyRideObj.startEnd[0]] = anyRideObj.items
+      diffLogObj[anyRideObj.startEnd[0].getTime()] = anyRideObj.items
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
-    let ActionFromEndTime = this.binarySearch(anyRideObj.startEnd[1], this.differenceLog)
+    let ActionFromEndTime = this.binarySearch(endInSeconds, this.differenceLog)
     //REMEMBER THAT ALL END TIMES THINGS SHOULD BE NEGATIVE
     if (ActionFromEndTime[1] === true){ //if should replace
       //do the replacing
       let replacementIndex = ActionFromEndTime[0]
       for (let key in anyRideObj.items){
-        if (this.differenceLog[replacementIndex].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][key] -= anyRideObj.items[key]
+        // console.log('KEY', key);
+        // console.log('this is object key/value pair', this.differenceLog[replacementIndex])
+        // console.log('this is value', this.differenceLog[replacementIndex][endInSeconds]); //access the value, not the object itself
+        // console.log('anyRideObj.items[key]', anyRideObj.items[key])
+        if (this.differenceLog[replacementIndex][endInSeconds].hasOwnProperty(key)){ 
+          // console.log('you should be mutating')
+          this.differenceLog[replacementIndex][endInSeconds][key] -= anyRideObj.items[key]
         } else {
-          this.differenceLog[replacementIndex][key] = - anyRideObj.items[key]
+          this.differenceLog[replacementIndex][endInSeconds][key] = - anyRideObj.items[key]
         }
       }
     } else {
       // ADD the diff in
-      console.log('hello')
       let insertionIndex = ActionFromEndTime[0]
       let clone = Object.assign({}, anyRideObj.items)
       for (let key in clone){
         clone[key] = - clone[key]
       } // make clone negative
+      // console.log('what is teh clone', clone);
       let diffLogObj = {};
-      diffLogObj[anyRideObj.startEnd[1]] = clone
+      diffLogObj[anyRideObj.startEnd[1].getTime()] = clone
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
-    console.log('diffLog', this.differenceLog);
+    console.log('diff log', this.differenceLog);
+
   }
   
   binarySearch(target, fullArray){
@@ -75,6 +85,7 @@ class ItemCounter {
       let min = anyArray[0];
       let max = anyArray[anyArray.length - 1];
       let middleIndex = Math.floor(anyArray.length / 2); 
+      // console.log('Number(Object.keys(anyArray[middleIndex])[0])', Number(Object.keys(anyArray[middleIndex])[0].getTime())) //USE GET TIME
       if (target === Number(Object.keys(anyArray[middleIndex])[0])){
         insertionIndex = offset + middleIndex;
         replace = true;
@@ -105,6 +116,7 @@ class ItemCounter {
   
     }
     recurse(target, fullArray);
+    console.log('diffLOG -----', this.differenceLog);
     return [insertionIndex, replace];
   }
 
@@ -143,8 +155,13 @@ let sampleRide2 = {
 startEnd: [new Date(2017, 9, 26, 2, 05), new Date(2017, 9, 26, 4, 05)],
 items: {a: 1, b: 2, c: 3}
 }
+let sampleRide3 = {
+  startEnd: [new Date(2017, 9, 23, 2, 05), new Date(2017, 9, 29, 4, 05)],
+  items: {d: 4}
+  }
 let instance = new ItemCounter();
 instance.processRide(sampleRide)
+instance.processRide(sampleRide2)
 instance.processRide(sampleRide2)
 
 // instance.printItemsPerInterval();
