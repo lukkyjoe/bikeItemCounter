@@ -14,3 +14,6 @@ THEN I might receive a Ride object with start/end time of 6pm / 7pm.
 
 #Data integrity assumptions
 I assumed that all ride objects are processed by my function, and that therefore, I can maintain a sorted array as data gets passed in. 
+
+#TODO:
+Check that zero qty items are not counted

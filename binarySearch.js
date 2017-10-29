@@ -46,6 +46,6 @@ console.log(binarySearch(50, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'},
 console.log(binarySearch(7, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]))
 console.log(binarySearch(0.5, [{1: 'a'}, {2: 'b'}, {7: 'a'}, {8: 'a'}, {10: 'a'}, {11: 'a'}, {12: 'a'}, {12.5: 'a'}]))
 console.log(binarySearch(2, []));
-
+//ZERO QTY ITEMS SHOULD NOT BE COUNTED
 
 

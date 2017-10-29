@@ -15,7 +15,7 @@ class Diff { // for the diff log
 class ItemCounter {
   constructor(){
     this.differenceLog = [];
-    this.histogram = {}
+    // this.histogram = {}
   }
   processRide(anyRideObj){
     // break anyRideObj into two times; start and end
@@ -28,7 +28,7 @@ class ItemCounter {
       //do the replacing inside differenceLog
       let replacementIndex = ActionFromStartTime[0]
       for (let key in anyRideObj.items){
-        console.log('keyyyyyyy YO', key);
+        // console.log('keyyyyyyy YO', key);
         if (this.differenceLog[replacementIndex][startInSeconds].hasOwnProperty(key)){ 
           this.differenceLog[replacementIndex][startInSeconds][key] += anyRideObj.items[key]
         } else {
@@ -39,7 +39,7 @@ class ItemCounter {
       // ADD the diff into differenceLog
       let insertionIndex = ActionFromStartTime[0]; 
       let diffLogObj = {};
-      diffLogObj[anyRideObj.startEnd[0].getTime()] = anyRideObj.items
+      diffLogObj[anyRideObj.startEnd[0].getTime()] = Object.assign({}, anyRideObj.items)
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
     let ActionFromEndTime = this.binarySearch(endInSeconds, this.differenceLog)
@@ -48,12 +48,7 @@ class ItemCounter {
       //do the replacing
       let replacementIndex = ActionFromEndTime[0]
       for (let key in anyRideObj.items){
-        // console.log('KEY', key);
-        // console.log('this is object key/value pair', this.differenceLog[replacementIndex])
-        // console.log('this is value', this.differenceLog[replacementIndex][endInSeconds]); //access the value, not the object itself
-        // console.log('anyRideObj.items[key]', anyRideObj.items[key])
         if (this.differenceLog[replacementIndex][endInSeconds].hasOwnProperty(key)){ 
-          // console.log('you should be mutating')
           this.differenceLog[replacementIndex][endInSeconds][key] -= anyRideObj.items[key]
         } else {
           this.differenceLog[replacementIndex][endInSeconds][key] = - anyRideObj.items[key]
@@ -66,13 +61,11 @@ class ItemCounter {
       for (let key in clone){
         clone[key] = - clone[key]
       } // make clone negative
-      // console.log('what is teh clone', clone);
       let diffLogObj = {};
       diffLogObj[anyRideObj.startEnd[1].getTime()] = clone
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
     console.log('diff log', this.differenceLog);
-
   }
   
   binarySearch(target, fullArray){
@@ -85,7 +78,6 @@ class ItemCounter {
       let min = anyArray[0];
       let max = anyArray[anyArray.length - 1];
       let middleIndex = Math.floor(anyArray.length / 2); 
-      // console.log('Number(Object.keys(anyArray[middleIndex])[0])', Number(Object.keys(anyArray[middleIndex])[0].getTime())) //USE GET TIME
       if (target === Number(Object.keys(anyArray[middleIndex])[0])){
         insertionIndex = offset + middleIndex;
         replace = true;
@@ -113,39 +105,25 @@ class ItemCounter {
               }
           }        
       }
-  
     }
     recurse(target, fullArray);
-    console.log('diffLOG -----', this.differenceLog);
+    // console.log('diffLOG -----', this.differenceLog);
     return [insertionIndex, replace];
   }
 
   printItemsPerInterval(){
-    // order differenceLog into array
-      // sort array
-    // let sortedArray => 
-      // transform sorted array into histogram 
-    // return histogram;
-    let changeToArray = (anyObj) => {
-      let arr = [];
-      for (let key in anyObj){
-        arr.push([key, anyObj[key]])
-      }
-      return arr;
+    let netItems = {}
+    for (let i = 0; i < this.differenceLog.length - 1; i++){
+      let itemsInTimeBlock = [];
+      itemsInTimeBlock.push(Object.keys(this.differenceLog[i])[0]);
+      itemsInTimeBlock.push('2'); //push in 
+      histogram.push(itemsInTimeBlock);
     }
-    let arr = changeToArray(this.differenceLog); 
-    console.log(arr)
+    console.log('histogram', histogram);
   }
 }
 
-class Counter {
-  constructor(){
-    this.counter = 0;
-  }
-  add(num){
-    this.counter += num;
-  }
-}
+
 
 let sampleRide = {
   startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
@@ -162,6 +140,10 @@ let sampleRide3 = {
 let instance = new ItemCounter();
 instance.processRide(sampleRide)
 instance.processRide(sampleRide2)
+console.log('item2 processed');
 instance.processRide(sampleRide2)
+instance.processRide(sampleRide3)
+instance.printItemsPerInterval();
 
 // instance.printItemsPerInterval();
+//ZERO QTY ITEMS SHOULD NOT BE COUNTED
