@@ -1,7 +1,7 @@
 {
   "name": "LimeBike",
   "version": "1.0.0",
-  "description": "Start / End Times: I shall assume I can use javascript Date objects to represent the start and end times.  For simplicity, my sample values will only take in times down to the minute.",
+  "description": "LimeBike itemCounter",
   "main": "ItemCounter.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,79 +1,7 @@
-class Ride {
-  constructor(startEnd, items){
-    this.startEnd = startEnd; //tuple of Date Objects
-    this.items = items
-  }
-}
-
-class Diff { // for the diff log
-  constructor(timeStamp, itemsDiff){
-    this.timeStamp = timeStamp;
-    this.itemsDiff = itemsDiff;
-  }
-}
-
 class ItemCounter {
   constructor(){
     this.differenceLog = [];
   }
-  processRide(anyRideObj){
-    // break anyRideObj into two times; start and end
-    let startInSeconds = anyRideObj.startEnd[0].getTime();
-    let endInSeconds = anyRideObj.startEnd[1].getTime();
-    console.log('startinSeconds', startInSeconds);
-    let ActionFromStartTime = this.binarySearch(startInSeconds, this.differenceLog);
-    console.log('actionFromStartTime', ActionFromStartTime)
-    if (ActionFromStartTime[1] === true){ //if should replace
-      //do the replacing inside differenceLog
-      let replacementIndex = ActionFromStartTime[0]
-      for (let key in anyRideObj.items){
-        // console.log('keyyyyyyy YO', key);
-        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][1][key] += anyRideObj.items[key]
-        } else {
-          this.differenceLog[replacementIndex][1][key] = anyRideObj.items[key]
-        }
-      }
-    } else {
-      // ADD the diff into differenceLog
-      let insertionIndex = ActionFromStartTime[0]; 
-      let diffLogObj = [];
-      diffLogObj.push(anyRideObj.startEnd[0].getTime())
-      diffLogObj.push(Object.assign({}, anyRideObj.items))
-      this.differenceLog.splice(insertionIndex, 0, diffLogObj)
-    }
-    let ActionFromEndTime = this.binarySearch(endInSeconds, this.differenceLog)
-    //REMEMBER THAT ALL END TIMES THINGS SHOULD BE NEGATIVE
-    if (ActionFromEndTime[1] === true){ //if should replace
-      //do the replacing
-      let replacementIndex = ActionFromEndTime[0]
-      for (let key in anyRideObj.items){
-        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][1][key] -= anyRideObj.items[key]
-        } else {
-          this.differenceLog[replacementIndex][1][key] = - anyRideObj.items[key]
-        }
-        // if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
-        //   this.differenceLog[replacementIndex][1] += anyRideObj.items[key]
-        // } else {
-        //   this.differenceLog[replacementIndex][1] = anyRideObj.items[key]
-        // }
-      }
-    } else {
-      // ADD the diff in
-      let insertionIndex = ActionFromEndTime[0]
-      let clone = Object.assign({}, anyRideObj.items)
-      for (let key in clone){
-        clone[key] = - clone[key]
-      } // make clone negative
-      let diffLogObj = [];
-      diffLogObj.push(anyRideObj.startEnd[1].getTime())
-      diffLogObj.push(clone)
-      this.differenceLog.splice(insertionIndex, 0, diffLogObj)
-    }
-    console.log('diff log', this.differenceLog);
-  }
-  
   binarySearch(target, fullArray){
     let insertionIndex = 0;
     let replace = false;
@@ -113,15 +41,61 @@ class ItemCounter {
       }
     }
     recurse(target, fullArray);
-    // console.log('diffLOG -----', this.differenceLog);
     return [insertionIndex, replace];
   }
 
+  processRide(anyRideObj){
+    // break anyRideObj into two times; start and end
+    let startInSeconds = anyRideObj.startEnd[0].getTime();
+    let endInSeconds = anyRideObj.startEnd[1].getTime();
+    let ActionFromStartTime = this.binarySearch(startInSeconds, this.differenceLog);
+    if (ActionFromStartTime[1] === true){ //if should replace
+      //do the replacing inside differenceLog
+      let replacementIndex = ActionFromStartTime[0]
+      for (let key in anyRideObj.items){
+        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
+          this.differenceLog[replacementIndex][1][key] += anyRideObj.items[key]
+        } else {
+          this.differenceLog[replacementIndex][1][key] = anyRideObj.items[key]
+        }
+      }
+    } else {
+      // ADD the diff into differenceLog
+      let insertionIndex = ActionFromStartTime[0]; 
+      let diffLogObj = [];
+      diffLogObj.push(anyRideObj.startEnd[0].getTime())
+      diffLogObj.push(Object.assign({}, anyRideObj.items))
+      this.differenceLog.splice(insertionIndex, 0, diffLogObj)
+    }
+    let ActionFromEndTime = this.binarySearch(endInSeconds, this.differenceLog)
+    if (ActionFromEndTime[1] === true){ //if should replace
+      //do the replacing
+      let replacementIndex = ActionFromEndTime[0]
+      for (let key in anyRideObj.items){
+        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
+          this.differenceLog[replacementIndex][1][key] -= anyRideObj.items[key]
+        } else {
+          this.differenceLog[replacementIndex][1][key] = - anyRideObj.items[key]
+        }
+      }
+    } else {
+      // add diff in
+      let insertionIndex = ActionFromEndTime[0]
+      let clone = Object.assign({}, anyRideObj.items)
+      for (let key in clone){
+        clone[key] = - clone[key]
+      } 
+      let diffLogObj = [];
+      diffLogObj.push(anyRideObj.startEnd[1].getTime())
+      diffLogObj.push(clone)
+      this.differenceLog.splice(insertionIndex, 0, diffLogObj)
+    }
+  }
+  
   printItemsPerInterval(){
     let histogram = []
     let netItems = {}
     let mapOfDiffs = this.differenceLog.map((item) => item[1])
-    console.log('mapOfdiffs', mapOfDiffs)
     let holder = []
     mapOfDiffs.reduce((sum, value) => {
       for (let key in value){
@@ -138,7 +112,7 @@ class ItemCounter {
         }
       }
       let netItems = Object.assign({}, sum);
-      let verbalizeNetItems = (someObj) => { //to pluralize or not
+      let verbalizeNetItems = (someObj) => { //to pluralize item words if necessary
         let list = []
         for (let key in someObj){
           if (someObj[key] > 1){
@@ -150,45 +124,46 @@ class ItemCounter {
         return list
       }
       let sentence = verbalizeNetItems(netItems);
-      console.log('sentence', sentence);
       let joinedSentence = sentence.join(', ');
-      console.log('joinedSentence', joinedSentence);
       holder.push(joinedSentence);
       return sum;
     }, {})
     holder.pop();
     for (let i = 0; i < this.differenceLog.length - 1; i++){
-      let itemsInTimeBlock = [];
       let start = new Date(this.differenceLog[i][0])
       let end = new Date(this.differenceLog[i + 1][0]);
-      itemsInTimeBlock.push(`${start} - ${end} -> ${holder[i]}`);
+      let itemsInTimeBlock = {};
+      itemsInTimeBlock.timeBlock = `${start} - ${end}`;
+      itemsInTimeBlock.items = holder[i]
       histogram.push(itemsInTimeBlock);
     }
-    console.log('histogram', histogram);
-    console.log('holder', holder);
-    // console.log('...holder', ...holder);
+    let nonEmptyHistogram = histogram.filter((obj) => {
+      if (obj.items.length){
+        return obj
+      }
+    })
+    nonEmptyHistogram.map((obj) => {
+      console.log(`${obj.timeBlock} -> ${obj.items}`)
+    })
   }
 }
 
+/* TEST CASES
+let counter = new ItemCounter();
 let sampleRide = {
-  startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
-  items: {a: 1, b: 2, c: 3}
+  startEnd: [new Date(2017, 10, 26, 1, 05), new Date(2017, 10, 26, 4, 05)],
+  items: {apple: 1, banana: 2, carrot: 3}
  }
 let sampleRide2 = {
-startEnd: [new Date(2017, 9, 26, 2, 05), new Date(2017, 9, 26, 4, 05)],
-items: {a: 1, b: 2, c: 3}
+  startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
+  items: {apple: 1, banana: 1, carrot: 1}
 }
 let sampleRide3 = {
-  startEnd: [new Date(2017, 9, 23, 2, 05), new Date(2017, 9, 29, 4, 05)],
-  items: {d: 4}
-  }
-let instance = new ItemCounter();
-instance.processRide(sampleRide)
-instance.processRide(sampleRide2)
-console.log('item2 processed');
-instance.processRide(sampleRide2)
-instance.processRide(sampleRide3)
-instance.printItemsPerInterval();
-
-// instance.printItemsPerInterval();
-//ZERO QTY ITEMS SHOULD NOT BE COUNTED
+  startEnd: [new Date(2017, 8, 26, 1, 05), new Date(2017, 11, 26, 4, 05)],
+  items: {apple: 1, banana: 1, carrot: 1}
+}
+counter.processRide(sampleRide);
+counter.processRide(sampleRide2);
+counter.processRide(sampleRide3);
+counter.printItemsPerInterval();
+*/
