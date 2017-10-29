@@ -159,10 +159,8 @@ class ItemCounter {
     holder.pop();
     for (let i = 0; i < this.differenceLog.length - 1; i++){
       let itemsInTimeBlock = [];
-      let start = new Date(0)
-      start.setUTCSeconds(this.differenceLog[i][0])
-      let end = new Date(0);
-      end.setUTCSeconds(this.differenceLog[i + 1][0])
+      let start = new Date(this.differenceLog[i][0])
+      let end = new Date(this.differenceLog[i + 1][0]);
       itemsInTimeBlock.push(`${start} - ${end} -> ${holder[i]}`);
       histogram.push(itemsInTimeBlock);
     }
@@ -171,8 +169,6 @@ class ItemCounter {
     // console.log('...holder', ...holder);
   }
 }
-
-
 
 let sampleRide = {
   startEnd: [new Date(2017, 9, 26, 1, 05), new Date(2017, 9, 26, 4, 05)],
