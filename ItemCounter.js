@@ -28,17 +28,18 @@ class ItemCounter {
       let replacementIndex = ActionFromStartTime[0]
       for (let key in anyRideObj.items){
         // console.log('keyyyyyyy YO', key);
-        if (this.differenceLog[replacementIndex][startInSeconds].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][startInSeconds][key] += anyRideObj.items[key]
+        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
+          this.differenceLog[replacementIndex][1][key] += anyRideObj.items[key]
         } else {
-          this.differenceLog[replacementIndex][startInSeconds][key] = anyRideObj.items[key]
+          this.differenceLog[replacementIndex][1][key] = anyRideObj.items[key]
         }
       }
     } else {
       // ADD the diff into differenceLog
       let insertionIndex = ActionFromStartTime[0]; 
-      let diffLogObj = {};
-      diffLogObj[anyRideObj.startEnd[0].getTime()] = Object.assign({}, anyRideObj.items)
+      let diffLogObj = [];
+      diffLogObj.push(anyRideObj.startEnd[0].getTime())
+      diffLogObj.push(Object.assign({}, anyRideObj.items))
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
     let ActionFromEndTime = this.binarySearch(endInSeconds, this.differenceLog)
@@ -47,11 +48,16 @@ class ItemCounter {
       //do the replacing
       let replacementIndex = ActionFromEndTime[0]
       for (let key in anyRideObj.items){
-        if (this.differenceLog[replacementIndex][endInSeconds].hasOwnProperty(key)){ 
-          this.differenceLog[replacementIndex][endInSeconds][key] -= anyRideObj.items[key]
+        if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
+          this.differenceLog[replacementIndex][1][key] -= anyRideObj.items[key]
         } else {
-          this.differenceLog[replacementIndex][endInSeconds][key] = - anyRideObj.items[key]
+          this.differenceLog[replacementIndex][1][key] = - anyRideObj.items[key]
         }
+        // if (this.differenceLog[replacementIndex][1].hasOwnProperty(key)){ 
+        //   this.differenceLog[replacementIndex][1] += anyRideObj.items[key]
+        // } else {
+        //   this.differenceLog[replacementIndex][1] = anyRideObj.items[key]
+        // }
       }
     } else {
       // ADD the diff in
@@ -60,8 +66,9 @@ class ItemCounter {
       for (let key in clone){
         clone[key] = - clone[key]
       } // make clone negative
-      let diffLogObj = {};
-      diffLogObj[anyRideObj.startEnd[1].getTime()] = clone
+      let diffLogObj = [];
+      diffLogObj.push(anyRideObj.startEnd[1].getTime())
+      diffLogObj.push(clone)
       this.differenceLog.splice(insertionIndex, 0, diffLogObj)
     }
     console.log('diff log', this.differenceLog);
@@ -77,13 +84,13 @@ class ItemCounter {
       let min = anyArray[0];
       let max = anyArray[anyArray.length - 1];
       let middleIndex = Math.floor(anyArray.length / 2); 
-      if (target === Number(Object.keys(anyArray[middleIndex])[0])){
+      if (target === anyArray[middleIndex][0]){
         insertionIndex = offset + middleIndex;
         replace = true;
         return;
       } else {
           if (anyArray.length === 1){
-            if (target < Object.keys(anyArray[middleIndex])){
+            if (target < anyArray[middleIndex][0]){
               insertionIndex += offset;
               return;
             } else {
@@ -91,12 +98,12 @@ class ItemCounter {
               return;
             }
           } else {
-              if (target < Object.keys(anyArray[middleIndex])){
+              if (target < anyArray[middleIndex][0]){
                 let shorterArray = anyArray.slice(0, middleIndex)
                 recurse(target, shorterArray, offset);
                 return;
               }
-              if (target > Object.keys(anyArray[middleIndex])){
+              if (target > anyArray[middleIndex][0]){
                 offset += middleIndex;
                 let shorterArray = anyArray.slice(middleIndex)
                 recurse(target, shorterArray, offset)
@@ -111,6 +118,7 @@ class ItemCounter {
   }
 
   printItemsPerInterval(){
+    let histogram = []
     let netItems = {}
     for (let i = 0; i < this.differenceLog.length - 1; i++){
       let itemsInTimeBlock = [];
@@ -119,7 +127,7 @@ class ItemCounter {
       itemsInTimeBlock.push('2'); //push in netItems
       histogram.push(itemsInTimeBlock);
     }
-    console.log('histogram', histogram);
+    // console.log('histogram', histogram);
   }
 }
 
