@@ -120,14 +120,55 @@ class ItemCounter {
   printItemsPerInterval(){
     let histogram = []
     let netItems = {}
+    let mapOfDiffs = this.differenceLog.map((item) => item[1])
+    console.log('mapOfdiffs', mapOfDiffs)
+    let holder = []
+    mapOfDiffs.reduce((sum, value) => {
+      for (let key in value){
+        if (sum.hasOwnProperty(key)){
+          sum[key] += value[key]
+          if (sum[key] === 0){
+            delete sum[key]
+          }
+        } else {
+          sum[key] = value[key]
+          if (sum[key] === 0){
+            delete sum[key]
+          }
+        }
+      }
+      let netItems = Object.assign({}, sum);
+      let verbalizeNetItems = (someObj) => { //to pluralize or not
+        let list = []
+        for (let key in someObj){
+          if (someObj[key] > 1){
+            list.push(`${someObj[key]} ${key}s`)
+          } else {
+            list.push(`${someObj[key]} ${key}`)           
+          }
+        }
+        return list
+      }
+      let sentence = verbalizeNetItems(netItems);
+      console.log('sentence', sentence);
+      let joinedSentence = sentence.join(', ');
+      console.log('joinedSentence', joinedSentence);
+      holder.push(joinedSentence);
+      return sum;
+    }, {})
+    holder.pop();
     for (let i = 0; i < this.differenceLog.length - 1; i++){
       let itemsInTimeBlock = [];
-      itemsInTimeBlock.push(Object.keys(this.differenceLog[i])[0]);
-      for (let item in this.differenceLog)
-      itemsInTimeBlock.push('2'); //push in netItems
+      let start = new Date(0)
+      start.setUTCSeconds(this.differenceLog[i][0])
+      let end = new Date(0);
+      end.setUTCSeconds(this.differenceLog[i + 1][0])
+      itemsInTimeBlock.push(`${start} - ${end} -> ${holder[i]}`);
       histogram.push(itemsInTimeBlock);
     }
-    // console.log('histogram', histogram);
+    console.log('histogram', histogram);
+    console.log('holder', holder);
+    // console.log('...holder', ...holder);
   }
 }
 
